@@ -70,9 +70,11 @@ Backbone.sync = function (method, model, options) {
   //since Backbone version 1.0.0 all events are raised in methods 'fetch', 'save', 'remove' etc
 
   var defer = $.Deferred();
-  io.emit(namespace + ':' + method, params.data, function (err, data) {
-    if (err) {
-      if(options.error) options.error(err);
+  // Changed err/data callback to simply data to work with the express.io method of acknowledgements
+  io.emit(namespace + ':' + method, params.data, function (data) {
+    console.log(data)
+    if (data.err) {
+      if(options.error) options.error(data.err);
       defer.reject();
     } else {
       if(options.success) options.success(data);
